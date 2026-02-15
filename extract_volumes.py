@@ -22,6 +22,7 @@ from SynthSeg.predict import predict
 INPUT_DIR = './inputs'
 OUTPUT_DIR = './outputs'
 CSV_FILENAME = 'brain_volumes.csv'
+SAVE_SEGMENTATION = False  # Set to True to keep .nii files, False to delete them after extraction
 
 # Standard FreeSurfer ColorLUT mapping for SynthSeg
 LABEL_MAP = {
@@ -92,6 +93,11 @@ def process_brain_mri(input_path, output_folder):
     for label_id, label_name in LABEL_MAP.items():
         count = stats.get(label_id, 0)
         volumes[label_name] = count * voxel_vol_mm3
+
+    # Clean up segmentation file if not needed
+    if not SAVE_SEGMENTATION:
+        if os.path.exists(seg_output_path):
+            os.remove(seg_output_path)
 
     return volumes
 
